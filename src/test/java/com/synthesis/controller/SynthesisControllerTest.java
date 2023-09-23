@@ -2,6 +2,7 @@ package com.synthesis.controller;
 
 import com.synthesis.entities.User;
 import com.synthesis.service.SynthesisService;
+import com.synthesis.util.SynthesisUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,12 +25,7 @@ public class SynthesisControllerTest {
     @InjectMocks
     private SynthesisController synthesisController;
 
-    private User preapreUser() {
-        User user = new User();
-        user.setId(Long.valueOf(1));
-        user.setFirstName("Alex");
-        return user;
-    }
+
 
     @Test
     public void ping() {
@@ -37,39 +34,51 @@ public class SynthesisControllerTest {
 
     @Test
     public void createUser() {
-
-        String status = synthesisService.createUser(preapreUser());
+        Mockito.when(synthesisService.createUser(Mockito.any())).thenReturn("user saved successfully");
+        String status = synthesisController.createUser(SynthesisUtil.preapreUser());
         Assertions.assertNotNull(status);
+        Assertions.assertEquals(status ,"user saved successfully");
     }
 
     @Test
     public void getUser() {
-        Mockito.when(synthesisService.getUser(Long.valueOf(1))).thenReturn(preapreUser());
+        Mockito.when(synthesisService.getUser(Long.valueOf(1))).thenReturn(SynthesisUtil.preapreUser());
         User user = synthesisController.getUser(Long.valueOf(1));
         Assertions.assertNotNull(user);
     }
 
     @Test
-    public void deleteUser(@PathVariable(name = "userId") Long userId) {
-        synthesisService.deleteUser(userId);
-    }
-
-    @Test
-    public void updateUser(@RequestBody User user) {
-        String status = synthesisService.updateUser(user);
+    public void deleteUser() {
+        Mockito.doNothing().when(synthesisService).deleteUser(Mockito.anyLong());
+        String status = synthesisController.deleteUser(Long.valueOf(1));
         Assertions.assertNotNull(status);
+        Assertions.assertEquals("user deleted successfully", status);
     }
 
     @Test
-    public void getUsers(@PathVariable(name = "fname") String firstName, @PathVariable(name = "lname") String lastName) {
-        List<User> users =  synthesisService.getUsers(firstName, lastName);
-        Assertions.assertNotNull(users);
+    public void updateUser() {
+        Mockito.when(synthesisService.updateUser(Mockito.any())).thenReturn("Success");
+        String status = synthesisController.updateUser(SynthesisUtil.preapreUser());
+        Assertions.assertNotNull(status);
+        Assertions.assertEquals("Success", status);
+    }
+
+    @Test
+    public void getUsers() {
+        List<User> users = new ArrayList<>();
+        users.add(SynthesisUtil.preapreUser());
+        Mockito.when(synthesisService.getUsers("test", "test")).thenReturn(users);
+        List<User> usersResponse =  synthesisController.getUsers("test", "test");
+        Assertions.assertNotNull(usersResponse);
     }
 
     @Test
     public void getAllUsers() {
-        List<User> users = synthesisService.getAllUsers();
-        Assertions.assertNotNull(users);
+        List<User> users = new ArrayList<>();
+        users.add(SynthesisUtil.preapreUser());
+        Mockito.when(synthesisService.getAllUsers()).thenReturn(users);
+        List<User> usersResponse = synthesisController.getAllUsers();
+        Assertions.assertNotNull(usersResponse);
     }
 
 }

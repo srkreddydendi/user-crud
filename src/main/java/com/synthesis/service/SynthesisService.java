@@ -6,15 +6,18 @@ import java.util.Optional;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.synthesis.repository.SynthesisRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.aws.messaging.core.QueueMessagingTemplate;
+import org.springframework.cloud.aws.messaging.listener.annotation.SqsListener;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
 import com.synthesis.entities.User;
 
 @Service
+@Slf4j
 public class SynthesisService {
 
 	private SynthesisRepository synthesisRepository;
@@ -23,7 +26,7 @@ public class SynthesisService {
 
 	private String endpoint;
 
-	ObjectMapper objectMapper;
+	private ObjectMapper objectMapper;
 
 	
 	@Autowired
@@ -84,5 +87,10 @@ public class SynthesisService {
 			throw new RuntimeException(e);
 		}
 
+	}
+
+	@SqsListener("synthesis")
+	public void loadMessageFromSQS(String message)  {
+		log.info("message from SQS Queue {}",message);
 	}
 }
