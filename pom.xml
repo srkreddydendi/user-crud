@@ -9,7 +9,7 @@
 		<version>2.7.15</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.synthesis.coding</groupId>
+	<groupId>com.synthesis</groupId>
 	<artifactId>synthesis</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>synthesis</name>
