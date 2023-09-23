@@ -31,7 +31,8 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
-	@GeneratedValue(strategy = IDENTITY)
+	@GenericGenerator(name = "userid_generator", strategy = "increment")
+	@GeneratedValue(generator = "userid_generator")
 	@Column(name = "id")
 	private Long id;
 	
